@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{% block title %}Home {% endblock title %}</title>
+    {% block head_favicon %}
+       <!-- <link rel="icon" type="image/png" href="{{ STATIC_URL }}dfa_App/img/favicon.ico"> -->
+    {% endblock head_favicon %}
+    {% block head_meta %}
+        {% block head_meta_charset %}
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        {% endblock head_meta_charset %}
+        {% block head_meta_contentlanguage %}
+            <meta http-equiv="Content-Language" value="de" />
+        {% endblock head_meta_contentlanguage %}
+        {% block head_meta_viewport %}
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% endblock head_meta_viewport %}
+    {% endblock head_meta %}
+    {% block head_css %}
+        {% block head_css_fonts %}
+        <link href="https://fonts.googleapis.com/css?family=Roboto|Ubuntu" rel="stylesheet">
+        <script src="https://kit.fontawesome.com/9b040eb53d.js" crossorigin="anonymous"></script>
+        {% endblock head_css_fonts%}
+        {% block head_css_site %}
+            <link href="{{ STATIC_URL }}dfa_App/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+            <link href="{{ STATIC_URL }}dfa_App/css/app.css" rel="stylesheet" media="screen">
+            <link href="{{ STATIC_URL }}dfa_App/css/animation.css" rel="stylesheet" media="screen">
+        {% endblock head_css_site %}
+        {% block head_css_section %}{% endblock head_css_section %}
+        {% block head_css_page %}{% endblock head_css_page %}
+    {% endblock head_css %}
+</head>
+{% load auth_extras %}
+<body>
+    <div class="body-wrapper">
+        {% if user.is_authenticated %}
+        <div class=sidebar-ghost></div>
+        <div class="sidebar sb-collapse">
+            <ul>
+                <li>
+                    <a class='sidebar-a' href="javascript:void(0)" id="link-search">
+                        <span class="icon"><i class="fas fa-car" aria-hidden="true"></i></span>
+                        <span class="icon-text sp-collapse">Fahrzeugsuche</span>
+                    </a>
+                </li>
+                <li>
+                    <a class='sidebar-a li-sub' href="javascript:void(0)">
+                        <span class="icon"><i class="fas fa-book" aria-hidden="true"></i></span>
+                        <span class="icon-text sp-collapse">Dokumentation<span class="sub-menu-arr"><i class="fas fa-caret-right"></i></span></span>
+                    </a>
+                    <ul class="sub-menu ul-collapse">
+                        <li class="sub-menu-li">
+                            <a href="javascript:void(0)" class="sub-menu-link">
+                                <span class="sub-menu-text">Arbeitswerte</span>
+                            </a>
+                        </li>
+                        <li class="sub-menu-li">
+                            <a href="javascript:void(0)" class="sub-menu-link" id="link-tsi">
+                                <span class="sub-menu-text">Technische Informationen</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                {% if request.user|has_group:"Flotte_Master" %}
+                <li>
+                    <a class='sidebar-a li-sub' href="javascript:void(0)">
+                        <span class="icon"><i class="fas fa-cogs" aria-hidden="true"></i></span>
+                        <span class="icon-text sp-collapse">Verwaltung<span class="sub-menu-arr"><i class="fas fa-caret-right"></i></span></span>
+                    </a>
+                    <ul class="sub-menu ul-collapse">
+                        <li class="sub-menu-li">
+                            <a href="javascript:void(0)" class="sub-menu-link" id="link-master-data">
+                                <span class="sub-menu-text">Stammdaten</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+        {% endif %}
+        <div class="main-container">
+            <div class="nav-top">
+                <div class="logo">
+                    Logo
+                </div>
+                <ul class="nav-top-menu">
+                    <li>
+                        <a href="javascript:void(0)" class="nav-top-a">
+                            <i class="fas fa-search" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li>
+                        <a href="javascript:void(0)" class="nav-top-a">
+                            <i class="fas fa-bell" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" class="nav-top-a" id='logout'>
+                            <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li>
+                        <a href="javascript:void(0)" class="nav-top-a" id='login'>
+                            <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="main-content">
+                {% block content %}
+                    if you see this, something is wrong!
+                {% endblock content %}
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+        {% block footer %}
+
+        {% endblock footer %}
+    </footer>
+    {% block footer_javascript %}
+    {% block footer_javascript_site %}
+    <script src="{{ STATIC_URL }}dfa_App/jQuery/jquery-3.4.1.js"></script>
+    <script src="{{ STATIC_URL }}dfa_App/js/popper.min.js"></script>
+    <script src="{{ STATIC_URL }}dfa_App/bootstrap/js/bootstrap.min.js"></script>
+    <script src="{{ STATIC_URL }}dfa_App/js/swal.js"></script>
+    <script src="{{ STATIC_URL }}dfa_App/js/app.js"></script>
+    {% endblock footer_javascript_site %}
+    {% block footer_javascript_section %}{% endblock footer_javascript_section %}
+    {% block footer_javascript_page %}{% endblock footer_javascript_page %}
+    {% endblock footer_javascript %}
+</body>

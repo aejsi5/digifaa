@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Fahrzeugsuche{% endblock title %}
+
+{% block content %}
+<h1>{{ header }}</h1>
+<div class="content-wrapper">
+    <div class="toggle-wrapper">
+        <div class="toggle default-search">
+            <input type="checkbox" class="check" id="toggle-search-type">
+                <b class="b switch"></b>
+                <b class="b track"></b>
+        </div>
+        <div class="toggle-text-div">
+            <span class="toggle-text active">Suche Anhand Kennzeichen</span>
+            <span class="toggle-text disable">Suche Anhand Fahrgestellnummer</span>
+        </div>
+    </div>
+    <div class="vehicle-search-form-wrapper">
+        <form class="form-vehicle-search by_VIN disable" method="GET">
+            {% csrf_token %}
+            <input type="hidden" name="type" value="by_vin">
+                <div class="row">
+                    <div class="col-4">
+                    {{ Search_by_VIN.vin.label}}
+                    </div>
+                    <div class="col-6">
+                    {{ Search_by_VIN.vin }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        {{ Search_by_VIN.first_registration_date.label}}
+                    </div>
+                    <div class="col-6">
+                        {{ Search_by_VIN.first_registration_date }}
+                    </div>
+                </div>
+            <button name='action' value='login' type="submit" class="btn btn-primary">Suchen</button>
+        </form>
+        <form class="form-vehicle-search by_Plate active" method="GET">
+            {% csrf_token %}
+            <input type="hidden" name="type" value="by_plate">
+            <div class="row">
+                <div class="col-4">
+                    {{ Search_by_Plate.plate.label}}
+                </div>
+                <div class="col-6">
+                    {{ Search_by_Plate.plate }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    {{ Search_by_Plate.last_3_diggits.label}}
+                </div>
+                <div class="col-6">
+                    {{ Search_by_Plate.last_3_diggits }}
+                </div>
+            </div>
+            <button name='action' value='login' type="submit" class="btn btn-primary">Suchen</button>
+        </form>
+    </div>
+</div>
+
+
+{% endblock content %}
+{% block footer_javascript_page %}
+{% if error %}
+<script>
+    Toast.fire({
+        icon: 'error',
+        title: 'Fahrzeug nicht gefunden',
+    });
+</script>
+{% endif %}
+{% endblock footer_javascript_page %}
+
+    

@@ -1,0 +1,7 @@
+{% extends 'email-templates/base.html' %}
+{% block title %}{{ title }}{% endblock title %}
+{% block address %}Sehr geehrte Damen und Herren,{% endblock address %}
+{% block content1 %}
+Am {{ uploaddate }} um {{ uploadtime }} wurden {{ uploadtype }} über den CSV-Import in unser System eingespielt.<br> 
+Anbei erhalten Sie eine Liste der Importfehler, die hierbei aufgetreten sind. Sofern diese Email keinen Anhang enthält ist kein Fehler aufgetreten.
+{% endblock content1 %}

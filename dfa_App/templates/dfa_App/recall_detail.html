@@ -1,0 +1,337 @@
+{% extends 'base.html' %}
+{% block title %}Verwaltung - Produktverbesserungen{% endblock title %}
+{% block head_css_page %}
+<link href="{{ STATIC_URL }}dfa_App/DataTables/datatables.css" rel="stylesheet" media="screen">
+{% endblock head_css_page %}
+{% block content %}
+<h1>Produktverbesserung</h1>
+<div class="content-wrapper">
+    <div class="flex-row-wrapper margin-btm-2">
+        <div class="detail-content-wrapper width-60">
+            <h2>Details</h2>
+            {% if perms.dfa_App.view_recall %}
+            <form class="form-recall-detail" method="POST" action="javascript:void(0)">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="col">
+                        <label for="Recall_CODE">{{ rec.Recall_CODE.label }}</label>
+                        {{ rec.Recall_CODE }}
+                    </div>
+                    <div class="col">
+                        <label for="Recall_NAME">{{ rec.Recall_NAME.label }}</label>
+                        {{ rec.Recall_NAME }}
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col">
+                        <label for="Recall_DESCRIPTION">{{ rec.Recall_DESCRIPTION.label }}</label>
+                        {{ rec.Recall_DESCRIPTION }}
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col">
+                        <label for="Recall_START_DATE">{{ rec.Recall_START_DATE.label }}</label>
+                        {{ rec.Recall_START_DATE }}
+                    </div>
+                    <div class="col">
+                        <label for="Recall_STATUS">{{ rec.Recall_STATUS.label }}</label>
+                        {{ rec.Recall_STATUS }}
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col">
+                        <label for="Recall_PLANNED_COMPLETATION_DATE">{{ rec.Recall_PLANNED_COMPLETATION_DATE.label }}</label>
+                        {{ rec.Recall_PLANNED_COMPLETATION_DATE }}
+                    </div>
+                    <div class="col">
+                        <label for="Recall_DATE_COMPLETED">{{ rec.Recall_DATE_COMPLETED.label }}</label>
+                        {{ rec.Recall_DATE_COMPLETED }}
+                    </div>
+                </div>
+                <div class="btn-div">
+                    {% if perms.dfa_App.change_recall %}
+                    <button name='action' value='cancel' type="submit" class="btn btn-primary hide cancel-btn">Abbrechen</button>
+                    <button name='action' value='save' type="submit" class="btn btn-primary hide save-btn">Speichern</button>
+                    {% endif %}
+                    {% if perms.dfa_App.add_recall %}
+                    <button name='action' value='login' type="submit" class="btn btn-primary new-btn">Neu</button>
+                    {% endif %}
+                </div>
+            </form>
+            {% endif %}
+        </div>
+        <div class="spacing-div width-2"></div>
+        <div class="detail-content-wrapper width-38 new-hide">
+            <h2 style="margin-bottom: 1rem;">Dokumente</h2>
+            {% if perms.dfa_App.view_recall_doc %}
+            {% for doc in docs %}
+            <div class="row flex-row-wrapper justify-center margin-btm-05" data-toggle="tooltip" data-placement="top" title="Dokumnet vom {{ doc.Document_UPLOAD_DATE }}, veröffentlicht zum {{ doc.Document_PUBLISH_DATE }}">
+                <div class="col">
+                    <a href="/media/uploads/documents/{{ doc.Document_PATH }}" target="_blank">
+                        {% if doc.Document_CLASS == 0 %}
+                        <span class="recall-docs-span docs-manual"><i class="fas fa-book"></i></span>
+                        <span class="doc-label">Anleitung</span>
+                        {% endif %}
+                        {% if doc.Document_CLASS == 1 %}
+                        <span class="recall-docs-span docs-ti"><i class="fas fa-wrench"></i></i></span>
+                        <span class="doc-label">Technische Information</span>
+                        {% endif %}
+                        {% if doc.Document_CLASS == 2 %}
+                        <span class="recall-docs-span docs-letter"><i class="fas fa-envelope-open-text"></i></i></span>
+                        <span class="doc-label">Anschreiben</span>
+                        {% endif %}
+                        {% if doc.Document_CLASS == 3 %}
+                        <span class="recall-docs-span docs-other"><i class="far fa-file-pdf"></i></span>
+                        <span class="doc-label">Sonstiges</span>
+                        {% endif %}
+                    </a>
+                </div>
+                <div class="col">
+                    <span class="doc-publish-date">{{ doc.Document_PUBLISH_DATE }}</span>
+                </div>
+                <div class="col-1 flex-row-wrapper justify-center">
+                    {% if perms.dfa_App.delete_recall_doc %}
+                    <span class="doc-delete"><i class="fas fa-trash-alt asbtn-delete-doc" data-doc_id="{{ doc.Document_ID }}"></i></span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% if perms.dfa_App.add_recall_doc %}
+            <form class="form-recall-doc-upload" method="POST" action="" enctype='multipart/form-data'>
+                {% csrf_token %}
+                <fieldset class="form-group" style="margin-top:2rem;">
+                    <h5>Neues Dokument</h5>
+                    <div class="form-row">
+                        <div class="col">
+                            <label for="Document_CLASS">{{ doc_form.Document_CLASS.label }}</label>
+                            {{ doc_form.Document_CLASS }}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
+                            <label for="Document_PUBLISH_DATE">{{ doc_form.Document_PUBLISH_DATE.label }}</label>
+                            {{ doc_form.Document_PUBLISH_DATE }}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
+                            <label for="Document_PATH">{{ doc_form.Document_PATH.label }}</label>
+                            {{ doc_form.Document_PATH }}
+                        </div>
+                    </div>
+                </fieldset>
+                <div class="form-row">
+                    <div class="col">
+                        <input type="hidden" name="Recall" id="id_Recall" class="form-control margin-btm-05" value="{{ Recall_ID }}">
+                    </div>  
+                </div>
+                <div class="btn-div">
+                    <button name='action' value='upload' type="submit" class="btn btn-primary">Speichern</button>
+                </div>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    <div class="flex-row-wrapper margin-btm-2">
+        <div class="detail-content-wrapper width-100 new-hide">
+            <h2>Einschränkungen</h2>
+            <p><i class="fas fa-info-circle"></i> Die unten stehenden Filter beschränken den Umfang der Produktverbesserung. Nur bei Fahrzeugen, die diesen Filterkriterien entsprechen wird die Produktverbesserung angezeigt. </p>
+            {% if perms.dfa_App.view_constraint %}
+            <div class="con-wrapper container container-constraints">
+                {% for con in constraints %}
+                <div class="row row-con {% if forloop.counter|divisibleby:2 %}row-alter{% endif %}">
+                    <div class="row row-div collapse-cons">
+                        <div class="row-control-div">
+                        <span class="badge {% if con.Constraint_Vehicle_VIN_FROM %} badge-success {% else %} badge-secondary {% endif %}" data-contype="fin" data-con="{{ con.Constraint_ID }}" data-index="{{ forloop.counter0 }}">Fahrgestellnummer</span>
+                        <span class="badge {% if con.Constraint_Vehicle_EXTERNAL_ID_FROM %} badge-success {% else %} badge-secondary {% endif %}" data-contype="fleet" data-con="{{ con.Constraint_ID }}" data-index="{{ forloop.counter0 }}">Flottennummer</span>
+                        <span class="badge {% if con.Constraint_Vehicle_MAKE %} badge-success {% else %} badge-secondary {% endif %}" data-contype="make" data-con="{{ con.Constraint_ID }}" data-index="{{ forloop.counter0 }}">Hersteller</span>
+                        <span class="badge {% if con.Constraint_Vehicle_MODEL %} badge-success {% else %} badge-secondary {% endif %}" data-contype="model" data-con="{{ con.Constraint_ID }}" data-index="{{ forloop.counter0 }}">Modell</span>
+                        <span class="badge {% if con.Constraint_Vehicle_TYPE %} badge-success {% else %} badge-secondary {% endif %}" data-contype="type" data-con="{{ con.Constraint_ID }}" data-index="{{ forloop.counter0 }}">Typ</span>
+                        <span class="badge {% if con.Constraint_Vehicle_SERIES %} badge-success {% else %} badge-secondary {% endif %}" data-contype="series" data-con="{{ con.Constraint_ID }}" data-index="{{ forloop.counter0 }}">Baureihe</span>
+                        <span class="badge {% if con.Constraint_Vehicle_FIRST_REGISTRATION_DATE_FROM %} badge-success {% else %} badge-secondary {% endif %}" data-contype="reg-date" data-con="{{ con.Constraint_ID }}" data-index="{{ forloop.counter0 }}">Erstzulassung</span>
+                        <span class="badge {% if con.Constraint_Vehicle_MILEAGE_FROM %} badge-success {% else %} badge-secondary {% endif %}" data-contype="odometer" data-con="{{ con.Constraint_ID }}" data-index="{{ forloop.counter0 }}">Laufleistung</span>
+                        <span class="badge {% if con.Constraint_Vehicle_USER %} badge-success {% else %} badge-secondary {% endif %}" data-contype="user" data-con="{{ con.Constraint_ID }}" data-index="{{ forloop.counter0 }}">Fahrzeugnutzer</span>
+                        </div>
+                        <div class="shourtcuts-div">
+                            <i class="fas fa-caret-down uncol-con" title="Datensatz ausklappen"></i>
+                            <i class="fas fa-trash-alt delete-con" data-con="{{ con.Constraint_ID }}" title="Datensatz löschen"></i>
+                        </div>
+                    </div>
+                    <div class="con-form">
+                        <form action="" data-con="{{ con.Constraint_ID }}">
+                            <div class="row">
+                                <div class="col-4 col-con hide" id="fin">
+                                    <div class="row pad-05">
+                                        <label for="Fin_from">Fahrgestellnummer von:</label>
+                                        <input type="text" name="Fin_from" id="" class="form-control input-con-form" data-index="{{ forloop.counter0 }}" data-field="Constraint_Vehicle_VIN_FROM" value="{{ con.Constraint_Vehicle_VIN_FROM }}">
+                                    </div>
+                                    <div class="row pad-05">
+                                        <label for="Fin_until">Fahrgestellnummer bis:</label>
+                                        <input type="text" name="Fin_until" id="" class="form-control input-con-form" data-index="{{ forloop.counter0 }}" data-field="Constraint_Vehicle_VIN_TO" value="{{ con.Constraint_Vehicle_VIN_TO }}">
+                                    </div>
+                                </div>
+                                <div class="col-4 col-con hide" id="fleet">
+                                    <div class="row pad-05">
+                                        <label for="fleet_from">Flottennummer von:</label>
+                                        <input type="text" name="fleet_from" id="" class="form-control input-con-form" data-index="{{ forloop.counter0 }}" data-field="Constraint_Vehicle_EXTERNAL_ID_FROM" value="{{ con.Constraint_Vehicle_EXTERNAL_ID_FROM }}">
+                                    </div>
+                                    <div class="row pad-05">
+                                        <label for="fleet_until">Flottennummer bis:</label>
+                                        <input type="text" name="fleet_until" id="" class="form-control input-con-form" data-index="{{ forloop.counter0 }}" data-field="Constraint_Vehicle_EXTERNAL_ID_TO" value="{{ con.Constraint_Vehicle_EXTERNAL_ID_TO }}">
+                                    </div>
+                                </div>
+                                <div class="col-3 col-con hide" id="make">
+                                    <div class="row pad-05">
+                                        <label for="selectmake">Hersteller:</label>
+                                        <select id="selectmake" class="form-control input-con-form" data-index="{{ forloop.counter0 }}" data-field="Constraint_Vehicle_MAKE_CHOICES">
+                                            <option {% if con.Constraint_Vehicle_MAKE_CHOICES == 0 %} selected {% endif %} data-op="0">gleich</option>
+                                            <option {% if con.Constraint_Vehicle_MAKE_CHOICES == 2 %} selected {% endif %} data-op="2">beinhaltet</option>
+                                            <option {% if con.Constraint_Vehicle_MAKE_CHOICES == 4 %} selected {% endif %} data-op="4">beginnt mit</option>
+                                            <option {% if con.Constraint_Vehicle_MAKE_CHOICES == 6 %} selected {% endif %} data-op="6">endet mit</option>
+                                        </select>
+                                    </div>
+                                    <div class="row pad-05">
+                                        <input type="text" name="make" id="" class="form-control input-con-form" data-index="{{ forloop.counter0 }}" data-field="Constraint_Vehicle_MAKE" value="{{ con.Constraint_Vehicle_MAKE }}">
+                                    </div>
+                                </div>
+                                <div class="col-3 col-con hide" id="model">
+                                    <div class="row pad-05">
+                                        <label for="selectmodel">Modell:</label>
+                                        <select id="selectmodel" class="form-control input-con-form" data-index="{{ forloop.counter0 }}" data-field="Constraint_Vehicle_MODEL_CHOICES">
+                                            <option {% if con.Constraint_Vehicle_MODEL_CHOICES == 0 %} selected {% endif %} data-op="0">gleich</option>
+                                            <option {% if con.Constraint_Vehicle_MODEL_CHOICES == 2 %} selected {% endif %} data-op="2">beinhaltet</option>
+                                            <option {% if con.Constraint_Vehicle_MODEL_CHOICES == 4 %} selected {% endif %} data-op="4">beginnt mit</option>
+                                            <option {% if con.Constraint_Vehicle_MODEL_CHOICES == 6 %} selected {% endif %} data-op="6">endet mit</option>
+                                        </select>
+                                    </div>
+                                    <div class="row pad-05">
+                                        <input type="text" name="model" id="" class="form-control input-con-form" data-index="{{ forloop.counter0 }}" data-field="Constraint_Vehicle_MODEL" value="{{ con.Constraint_Vehicle_MODEL }}">
+                                    </div>
+                                </div>
+                                <div class="col-3 col-con hide" id="type">
+                                    <div class="row pad-05">
+                                        <label for="selectype">Typ:</label>
+                                        <select id="selecttype" class="form-control input-con-form" data-index="{{ forloop.counter0 }}" data-field="Constraint_Vehicle_TYPE_CHOICES">
+                                            <option {% if con.Constraint_Vehicle_TYPE_CHOICES == 0 %} selected {% endif %} data-op="0">gleich</option>
+                                            <option {% if con.Constraint_Vehicle_TYPE_CHOICES == 2 %} selected {% endif %} data-op="2">beinhaltet</option>
+                                            <option {% if con.Constraint_Vehicle_TYPE_CHOICES == 4 %} selected {% endif %} data-op="4">beginnt mit</option>
+                                            <option {% if con.Constraint_Vehicle_TYPE_CHOICES == 6 %} selected {% endif %} data-op="6">endet mit</option>
+                                        </select>
+                                    </div>
+                                    <div class="row pad-05">
+                                        <input type="text" name="type" id="" class="form-control input-con-form" data-index="{{ forloop.counter0 }}" data-field="Constraint_Vehicle_TYPE" value="{{ con.Constraint_Vehicle_TYPE }}">
+                                    </div>
+                                </div>
+                                <div class="col-2 col-con hide" id="series">
+                                    <div class="row pad-05">
+                                        <label for="selectseries">Baureihe:</label>
+                                        <select id="selectseries" class="form-control input-con-form" data-index="{{ forloop.counter0 }}" data-field="Constraint_Vehicle_SERIES_CHOICES">
+                                            <option {% if con.Constraint_Vehicle_SERIES_CHOICES == 0 %} selected {% endif %} data-op="0">gleich</option>
+                                            <option {% if con.Constraint_Vehicle_SERIES_CHOICES == 2 %} selected {% endif %} data-op="2">beinhaltet</option>
+                                            <option {% if con.Constraint_Vehicle_SERIES_CHOICES == 4 %} selected {% endif %} data-op="4">beginnt mit</option>
+                                            <option {% if con.Constraint_Vehicle_SERIES_CHOICES == 6 %} selected {% endif %} data-op="6">endet mit</option>
+                                        </select>
+                                    </div>
+                                    <div class="row pad-05">
+                                        <input type="text" name="series" id="" class="form-control input-con-form" data-index="{{ forloop.counter0 }}" data-field="Constraint_Vehicle_SERIES" value="{{ con.Constraint_Vehicle_SERIES }}">
+                                    </div>
+                                </div>
+                                <div class="col-4 col-con hide" id="reg-date">
+                                    <div class="row pad-05">
+                                        <label for="reg-from">Erstzulassung von:</label>
+                                        <input type="date" name="reg-from" id="" class="form-control input-con-form" data-index="{{ forloop.counter0 }}" data-field="Constraint_Vehicle_FIRST_REGISTRATION_DATE_FROM" value='{{con.Constraint_Vehicle_FIRST_REGISTRATION_DATE_FROM }}'>
+                                    </div>
+                                    <div class="row pad-05">
+                                        <label for="reg_until">Erstzulassung bis:</label>
+                                        <input type="date" name="reg_until" id="" class="form-control input-con-form" data-index="{{ forloop.counter0 }}" data-field="Constraint_Vehicle_FIRST_REGISTRATION_DATE_TO" value='{{ con.Constraint_Vehicle_FIRST_REGISTRATION_DATE_TO }}'>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-con hide" id="odometer">
+                                    <div class="row pad-05">
+                                        <label for="odo-from">Kilometerstand von:</label>
+                                        <input type="number" name="odo-from" id="" class="form-control input-con-form" data-index="{{ forloop.counter0 }}" data-field="Constraint_Vehicle_MILEAGE_FROM" value="{{ con.Constraint_Vehicle_MILEAGE_FROM }}">
+                                    </div>
+                                    <div class="row pad-05">
+                                        <label for="odountil">Kilometerstand bis:</label>
+                                        <input type="number" name="odo_until" id="" class="form-control input-con-form" data-index="{{ forloop.counter0 }}" data-field="Constraint_Vehicle_MILEAGE_TO" value="{{ con.Constraint_Vehicle_MILEAGE_TO }}">
+                                    </div>
+                                </div>
+                                <div class="col-3 col-con hide" id="user">
+                                    <div class="row pad-05">
+                                        <label for="selectuser">Fahrzeugnutzer:</label>
+                                        <select id="selectuser" class="form-control input-con-form" data-index="{{ forloop.counter0 }}" data-field="Constraint_Vehicle_USER_CHOICES">
+                                            <option {% if con.Constraint_Vehicle_USER_CHOICES == 0 %} selected {% endif %} data-op="0">gleich</option>
+                                            <option {% if con.Constraint_Vehicle_USER_CHOICES == 2 %} selected {% endif %} data-op="2">beinhaltet</option>
+                                            <option {% if con.Constraint_Vehicle_USER_CHOICES == 4 %} selected {% endif %} data-op="4">beginnt mit</option>
+                                            <option {% if con.Constraint_Vehicle_USER_CHOICES == 6 %} selected {% endif %} data-op="6">endet mit</option>
+                                        </select>
+                                    </div>
+                                    <div class="row pad-05">
+                                        <input type="text" name="user" id="" class="form-control input-con-form" data-index="{{ forloop.counter0 }}" data-field="Constraint_Vehicle_USER" value="{{ con.Constraint_Vehicle_USER }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="btn-div">
+                    <button name='action' value='new_constraint' type="submit" class="btn btn-primary btn-new-constraint">Neu</button>
+                    <button name='action' value='create_vehicle_list' type="submit" class="btn btn-primary btn-create-vlist">Fahrzeugliste
+                        erzeugen</button>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="detail-content-wrapper width-100 hide div-vrt">
+        <h2>Fahrzeugliste</h2>
+        <table class="data-tbl hover stripe row-border" id="vehicle_recall_tbl">
+            <thead>
+                <tr>
+                    <th>Vehicle_Recall_ID</th>
+                    <th>Vehicle_VIN</th>
+                    <th>Vehicle_PLATE</th>
+                    <th>Vehicle_MAKE</th>
+                    <th>Vehicle_MODEL</th>
+                    <th>Vehicle_FIRST_REGISTRATION_DATE</th>
+                    <th>VR_STATUS</th>
+                    <th>VR_DATE_CREATED</th>
+                    <th>VR_DATE_COMPLETED</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+{% endblock content %}
+{% block footer_javascript_page %}
+<script src="{{ STATIC_URL }}dfa_App/DataTables/datatables.js"></script>
+<script src="{{ STATIC_URL }}dfa_App/js/moment.min.js"></script>
+{% if error %}
+<script>
+    var error = {
+        'error_code': '{{ error.code }}',
+        'error_name': '{{ error.name_ger }}',
+        'error_des': '{{ error.description }}'
+    }
+    if (error) {
+            Toast.fire({
+                icon: 'error',
+                title: error['error_name'],
+                text: error['error_des']
+            });
+        }
+</script>
+{% endif %}
+{% if status == 'Upload succeed' %}
+<script>
+    Toast.fire({
+            icon: 'success',
+            title: 'Dokument gespeichert'
+        });
+</script>
+{% endif %}
+<script src="{{ STATIC_URL }}dfa_App/js/constraints-class.js"></script>
+<script src="{{ STATIC_URL }}dfa_App/js/rdetail.js"></script>
+{% endblock footer_javascript_page %}

@@ -1,0 +1,527 @@
+{% extends 'base.html' %}
+{% block title %}
+    Fahrzeugübersicht für {{ vehicle.Vehicle_VIN}}
+{% endblock title %}
+{% block head_css_page %}
+    <link href="{{ STATIC_URL }}dfa_App/DataTables/datatables.css" rel="stylesheet" media="screen">
+{% endblock head_css_page %}
+{% block content %}
+<h1>Fahrzeugübersicht</h1>
+<div class="content-wrapper">
+    <ul class="nav nav-tabs ul-vehicle-detail">
+        <li class="nav-item">
+            <a class="nav-link active" href="#vehicle-data" id="vehicle-data-tab" data-toggle="tab" role="tab"
+                aria-controls="vehicle-data" aria-selected="true">Fahrzeugdaten</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#vehicle-notes" id="vehicle-note-tab" data-toggle="tab" role="tab" aria-controls="vehicle-notes"
+                aria-selected="false">Notizen</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#vehicle-history" id="vehicle-history-tab" data-toggle="tab" role="tab" aria-controls="vehicle-history"
+                aria-selected="false">Historie</a>
+        </li>
+    </ul>
+    <div class="vehicle-detail-content-wrapper">
+        <div class="tab-pane fade show active  vehicle-tab" id="vehicle-data" role="tabpanel" aria-labelledby="vehicle-data-tab">
+            <div class="container">
+                <div class="row row-one">
+                    <div class="col-md-4 col-vehicle col-vehicle-basics">
+                        <div class="row row-two">
+                            <div class="col-md-5 col-label">Fahrgestellnummer:</div>
+                            <div class="col-md-7">{{ vehicle.Vehicle_VIN}}</div>
+                        </div>
+                        <div class="row row-two">
+                            <div class="col-md-5 col-label">Erstzulassungsdatum:</div>
+                            <div class="col-md-7">{{ vehicle.Vehicle_FIRST_REGISTRATION_DATE}}</div>
+                        </div>
+                        <div class="row row-two">
+                            <div class="col-md-5 col-label">Kennzeichen:</div>
+                            <div class="col-md-7">{{ vehicle.Vehicle_PLATE}}</div>
+                        </div>
+                        <div class="row row-two">
+                            <div class="col-md-5 col-label">Flottennummer:</div>
+                            <div class="col-md-7">{{ vehicle.Vehicle_EXTERNAL_ID}}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-vehicle col-vehicle-make">
+                        <div class="row row-two">
+                            <div class="col-md-5 col-label">Hersteller:</div>
+                            <div class="col-md-7">{{ vehicle.Vehicel_MAKE}}</div>
+                        </div>
+                        <div class="row row-two">
+                            <div class="col-md-5 col-label">Modell:</div>
+                            <div class="col-md-7">{{ vehicle.Vehicel_MODEL}}</div>
+                        </div>
+                        <div class="row row-two">
+                            <div class="col-md-5 col-label">Typ:</div>
+                            <div class="col-md-7">{{ vehicle.Vehicel_TYPE}}</div>
+                        </div>
+                        <div class="row row-two">
+                            <div class="col-md-5 col-label">Serie:</div>
+                            <div class="col-md-7">{{ vehicle.Vehicle_SERIES}}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-vehicle col-vehicle-user">
+                        <div class="row row-two">
+                            <div class="col-md-5 col-label">Fahrzeugnutzer:</div>
+                            <div class="col-md-7">{{ vehicle.Vehicle_USER}}</div>
+                        </div>
+                        <div class="row row-two">
+                            <div class="col-md-5 col-label">Ansprechpartner:</div>
+                            <div class="col-md-7">{{ vehicle.Vehicle_USER_CONTACT}}</div>
+                        </div>
+                        <div class="row row-two">
+                            <div class="col-md-5 col-label">Telefon:</div>
+                            <div class="col-md-7">{{ vehicle.Vehicle_USER_CONTACT_PHONE}}</div>
+                        </div>
+                        <div class="row row-two">
+                            <div class="col-md-5 col-label">Email:</div>
+                            <div class="col-md-7">{{ vehicle.Vehicle_USER_CONTACT_EMAIL}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row row-one">
+                    <div class="col col-vehicle">
+                        <div class="row row-two">
+                            <div class="col-md-6 col-label">Gewährleistung bis:</div>
+                            <div class="col-md-6">{{ vehicle.Vehicle_WARRENTY_END}}</div>
+                        </div>
+                        <div class="row row-two">
+                            <div class="col-md-6 col-label">Gewährleistungsgeber:</div>
+                            <div class="col-md-6">{{ vehicle.Vehicle_WARRENTOR}}</div>
+                        </div>
+                        <div class="row row-two">
+                            <div class="col-md-6 col-label">bevorzugter Kommunikationskanal:</div>
+                            <div class="col-md-6">{{ vehicle.Vehicle_WARRENTOR_PREFERED_CHANNEL}}</div>
+                        </div>
+                    </div>
+                    <div class="col col-vehicle">
+                        <div class="row row-two">
+                            <div class="col-md-6 col-label">Letzter Kilometerstand:</div>
+                            <div class="col-md-6">{{ vehicle.Vehicle_LAST_MILEAGE}}</div>
+                        </div>
+                        <div class="row row-two">
+                            <div class="col-md-6 col-label">Datum Letzter Kilometerstand:</div>
+                            <div class="col-md-6">{{ vehicle.Vehicle_DATE_LAST_MILEAGE}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade order-tab" id="vehicle-notes" role="tabpanel" aria-labelledby="vehicle-note-tab">
+            <table class="data-tbl hover stripe row-border" id="notes_tbl">
+                <thead>
+                    <tr>
+                        <th>Note_ID</th>
+                        <th>Note_DATE</th>
+                        <th>Note_ODOMETER</th>
+                        <th>Note_TEXT</th>
+                        <th>User</th>
+                    </tr>
+                </thead>
+            </table>
+            <div class="btn-div">
+                <button type="button" data-toggle="modal" data-target="#modal-delete-note" class="btn btn-danger" disabled>Löschen</button>
+                <div class="modal fade" id="modal-delete-note" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"  aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Notiz löschen</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Die ausgewählte Notiz wird unwiderruflich gelöscht. Möchten Sie fortfahren?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+                                <button type="button" class="btn btn-primary btn-delete-note">Ja</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" data-toggle="modal" data-target="#modal-new-note" class="btn btn-primary">Neu</button>
+                <div class="modal fade" id="modal-new-note" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Neue Notiz</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group shadow-textarea">
+                                    <label for="new-note-content">Die hier erfasste Notiz ist für jeden Benutzer von DFA sichtbar. Bitte achten Sie daher auf die Netiquette.</label>
+                                    <textarea class="form-control z-depth-1" id="new-note-content" rows="3"
+                                        placeholder="Hier könnte Ihre Werbung stehen..."></textarea>
+                                    <br>
+                                    <label for="new-note-odometer">Kilometerstand (optional):</label>
+                                    <input class="form-control" id="new-note-odometer" type="number" placeholder="1234"></input>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+                                <button type="button" class="btn btn-primary btn-submit-note" data-vehicle="{{ vehicle.Vehicle_ID}}">Speichern</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade order-tab" id="vehicle-history" role="tabpanel" aria-labelledby="vehicle-history-tab">
+            <table class="data-tbl hover stripe row-border" id="history_tbl">
+                <thead>
+                    <tr>
+                        <th>History_ID</th>
+                        <th>Recall_CODE</th>
+                        <th>History_DATE</th>
+                        <th>History_ODOMETER</th>
+                        <th>Workshop</th>
+                        <th>History_DESCRIPTION</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    {% if recalls %}
+    <h1 style="margin-top: 1rem;">Produktverbesserungen</h1>
+    <div class="recall-wrapper">
+        <span class="detail-info"><i class="fas fa-info-circle"></i> Für mehr Details klicken Sie bitte auf die entsprechende Zeile</span>
+        <table class="full-width">
+            <thead>
+                <tr>
+                    <th class="recall-code">Code</th>
+                    <th class="recall-name">Name</th>
+                    <th class="recall-start-date">Startdatum</th>
+                    <th class="recall-completion-date">Abschlussdatum</th>
+                    <th class="recall-status">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in recalls %}
+                <tr data-hover-text="{{ i.Recall_Data.Recall_DESCRIPTION }}" class="recall-tr recall-tr-status-{{i.Vehicle_Recall.Status}}" id="{{ i.Vehicle_Recall.Vehicle_Recall_ID }}">
+                    <td class="recall-code">{{ i.Recall_Data.Recall_CODE }}</td>
+                    <td class="recall-name">{{ i.Recall_Data.Recall_NAME }}</td>
+                    <td class="recall-start-date">
+                        {% if i.Recall_Data.Recall_START_DATE %}
+                            {{ i.Recall_Data.Recall_START_DATE }}
+                        {% endif %}
+                    </td>
+                    <td class="recall-completion-date">
+                        {% if i.Vehicle_Recall.Completion_Date %}
+                            {{ i.Vehicle_Recall.Completion_Date }}
+                        {% endif %}
+                    </td>
+                    <td class="recall-status">
+                        {% if i.Vehicle_Recall.Status == 0 %}
+                        Offen
+                        <span class="recall-status-icon-span recall-pending"><i class="fas fa-cog"></i></span>
+                        {% endif %}
+                        {% if i.Vehicle_Recall.Status == 1 %}
+                        Vorbelegt
+                        <span class="recall-status-icon-span recall-preset"><i class="fas fa-question"></i></span>
+                        {% endif %}
+                        {% if i.Vehicle_Recall.Status == 2 %}
+                        Abgeschlossen
+                        <span class="recall-status-icon-span recall-check"><i class="fas fa-check"></i></span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="recall-wrapper recall-detail-wrapper hide" id="recall-wrapper-div">
+        <div class="div-controls">
+            <i class="far fa-times-circle"></i>
+        </div>
+        <h2>Details</h2>
+        {% for i in recalls %}
+            <div class="container recall-detail-div hide" id="recall-{{ i.Vehicle_Recall.Vehicle_Recall_ID }}">
+                <div class="row">
+                    <div class="col col-vehicle">
+                        <div class="row">
+                            <div class="col col-label">ID:</div>
+                            <div class="col">{{ i.Vehicle_Recall.Vehicle_Recall_ID }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-label">Code:</div>
+                            <div class="col">{{ i.Recall_Data.Recall_CODE }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-label">Name:</div>
+                            <div class="col">{{ i.Recall_Data.Recall_NAME }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-label">Beschreibung:</div>
+                            <div class="col">{{ i.Recall_Data.Recall_DESCRIPTION }}</div>
+                        </div>
+                    </div>
+                    <div class="col col-vehicle">
+                        <div class="row">
+                            <div class="col col-label">Anlagedatum:</div>
+                            <div class="col">
+                                {% if i.Recall_Data.Recall_START_DATE %}
+                                    {{ i.Recall_Data.Recall_START_DATE }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-label">Status:</div>
+                            <div class="col">
+                                {% if i.Vehicle_Recall.Status == 0 %}
+                                Offen
+                                {% endif %}
+                                {% if i.Vehicle_Recall.Status == 1 %}
+                                Vorbelegt
+                                {% endif %}
+                                {% if i.Vehicle_Recall.Status == 2 %}
+                                Abgeschlossen
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-label">Abschlussdatum:</div>
+                            <div class="col">
+                                {% if i.Vehicle_Recall.Completion_Date %}
+                                    {{ i.Vehicle_Recall.Completion_Date }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-vehicle">
+                        <div class="row">
+                            <div class="col col-label">Letzte Änderung</div>
+                            <div class="col">{{ i.Vehicle_Recall.Update.Date_Update }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col col-label">Änderung durch</div>
+                            <div class="col">{{ i.Vehicle_Recall.Update.Workshop.Workshop_NAME }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-vehicle">
+                        <h4>Dokumente</h4>
+                        {% for doc in i.Recall_Data.Recall_DOCS %}
+                            <div class="row">
+                                <div class="col">
+                                    <a href="/media/uploads/documents/{{ doc.Document_PATH }}" class="doc-links" target="_blank">
+                                        {% if doc.Document_CLASS == 0 %}
+                                        <span class="recall-docs-span docs-manual"><i class="fas fa-book"></i></span>
+                                        <span class="doc-label">Anleitung</span>
+                                        {% endif %}
+                                        {% if doc.Document_CLASS == 1 %}
+                                        <span class="recall-docs-span docs-ti"><i class="fas fa-wrench"></i></i></span>
+                                        <span class="doc-label">Technische Information</span>
+                                        {% endif %}
+                                        {% if doc.Document_CLASS == 2 %}
+                                        <span class="recall-docs-span docs-letter"><i class="fas fa-envelope-open-text"></i></i></span>
+                                        <span class="doc-label">Anschreiben</span>
+                                        {% endif %}
+                                        {% if doc.Document_CLASS == 3 %}
+                                        <span class="recall-docs-span docs-other"><i class="far fa-file-pdf"></i></span>
+                                        <span class="doc-label">Sonstiges</span>
+                                        {% endif %}
+                                    </a>
+                                </div>
+                                <div class="col">
+                                    <span class="doc-upload-date">{{ doc.Document_PUBLISH_DATE }}</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% if i.Vehicle_Recall.Status == 0 %}
+                <div class="row">
+                    <button type="button" data-toggle="modal" data-target="#recall-m-{{ i.Vehicle_Recall.Vehicle_Recall_ID }}" class="btn btn-primary btn-submit-recall" data-recall-id="{{ i.Vehicle_Recall.Vehicle_Recall_ID }}">Als Abgeschlossen markieren</button>
+                    <div class="modal fade" id="recall-m-{{ i.Vehicle_Recall.Vehicle_Recall_ID }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">{{ i.Recall_Data.Recall_CODE }} als abgeschlossen markieren</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    Die oben genannte Produktverbesserung wird als abgeschlossen markiert. Bis zur Bearbeitung der entsprechenden Rechnung wird die Maßnahme hier unter dem Status "vorbelegt" dargestellt.
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+                                    <button type="button" class="btn btn-primary recall-update-btn" data-recall-id="{{ i.Vehicle_Recall.Vehicle_Recall_ID }}">Speichern</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if i.Vehicle_Recall.Status == 1 %}
+                <div class="row">
+                    <button type="button" data-toggle="modal" data-target="#recall-m-{{ i.Vehicle_Recall.Vehicle_Recall_ID }}"
+                        class="btn btn-primary btn-submit-recall" data-recall-id="{{ i.Vehicle_Recall.Vehicle_Recall_ID }}">Als
+                        Offen markieren</button>
+                    <div class="modal fade" id="recall-m-{{ i.Vehicle_Recall.Vehicle_Recall_ID }}" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">{{ i.Recall_Data.Recall_CODE }} als offen
+                                        markieren</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    Die oben genannte Produktverbesserung wird als offen und damit als noch nicht durchgeführt markiert.
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+                                    <button type="button" class="btn btn-primary recall-reject-btn"
+                                        data-recall-id="{{ i.Vehicle_Recall.Vehicle_Recall_ID }}">Speichern</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+{% csrf_token %}
+
+{% endblock content %}
+{% block footer_javascript_page %}
+    <script src="{{ STATIC_URL }}dfa_App/DataTables/datatables.js"></script>
+    <script type="text/javascript">
+        "use strict";
+        var ntbl = null;
+        var htbl = null;
+        var requestor = "{{ requestor | safe }}";
+        var tbl_data_notes = null;
+        var tbl_data_his = null;
+        {% if notes %}
+            tbl_data_notes = {{ notes | safe }};
+        {% endif %}
+        {% if history %}
+            tbl_data_his = {{ history | safe }};
+        {% endif %}
+        jQuery(document).ready(function ($) {
+            ntbl = $('#notes_tbl').DataTable({
+                responsive: true,
+                stateSave: false,
+                select: 'single',
+                order: [1,'desc'],
+                data: tbl_data_notes,
+                "info": true,
+                "processing": true,
+                "ordering": true,
+                "searching": true,
+                "language": {
+                    "emptyTable": "Keine Daten verfügbar",
+                    "info": "Angezeigt werden _START_ bis _END_ von _TOTAL_ Einträge",
+                    "infoEmpty": "Keine Daten verfügbar",
+                    "infoFiltered": "(gefiltert von _MAX_ Einträgen)",
+                    "thousands": ".",
+                    "lengthMenu": "_MENU_ Einträge pro Seite",
+                    "search": "Suche",
+                    "paginate": {
+                        "first": "Erste",
+                        "last": "Letzte",
+                        "next": "Vor",
+                        "previous": "Zurück"
+                    },
+                },
+                "columns": [
+                    {
+                        "visible": false
+                    },
+                    {
+                        "title": "Datum"
+                    },
+                    {
+                        "title": "Kilometerstand"
+                    },
+                    {
+                        "title": "Text"
+                    },
+                    {
+                        "visible": false
+                    },
+                ]
+            });
+            ntbl.on('select', function (e, dt, type, indexes) {
+                if (type === 'row') {
+                    var author = ntbl.rows({ selected: true }).data()[0][4];
+                    if(requestor == author){
+                        $('.btn.btn-danger').prop('disabled', false);
+                    }
+                    else{
+                        $('.btn.btn-danger').prop('disabled', true);
+                    };
+                };
+            });
+            ntbl.on('deselect', function (e, dt, type, indexes) {
+                $('.btn.btn-danger').prop('disabled', true);
+            });
+            htbl = $('#history_tbl').DataTable({
+                responsive: true,
+                stateSave: false,
+                select: true,
+                order: [3, 'desc'],
+                data: tbl_data_his,
+                "info": true,
+                "processing": true,
+                "ordering": true,
+                "searching": true,
+                "language": {
+                    "emptyTable": "Keine Daten verfügbar",
+                    "info": "Angezeigt werden _START_ bis _END_ von _TOTAL_ Einträge",
+                    "infoEmpty": "Keine Daten verfügbar",
+                    "infoFiltered": "(gefiltert von _MAX_ Einträgen)",
+                    "thousands": ".",
+                    "lengthMenu": "_MENU_ Einträge pro Seite",
+                    "search": "Suche",
+                    "paginate": {
+                        "first": "Erste",
+                        "last": "Letzte",
+                        "next": "Vor",
+                        "previous": "Zurück"
+                    },
+                },
+                "columns": [
+                    {
+                        "visible": false
+                    },
+                    {
+                        "title": "Rückrufcode"
+                    },
+                    {
+                        "title": "Datum"
+                    },
+                    {
+                        "title": "Kilometerstand"
+                    },
+                    {
+                        "title": "Werkstatt"
+                    },
+                    {
+                        "title": "Kommentar"
+                    },
+                ]
+            });
+        });
+
+    </script>
+    <script src="{{ STATIC_URL }}dfa_App/js/vehicle.js"></script>
+{% endblock footer_javascript_page %}

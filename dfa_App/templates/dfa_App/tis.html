@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% block title %}Technische Informationen{% endblock title %}
+{% block head_css_page %}
+<link href="{{ STATIC_URL }}dfa_App/DataTables/datatables.css" rel="stylesheet" media="screen">
+<style>
+    .main-content {
+        display: flex;
+    }
+</style>
+{% endblock head_css_page %}
+{% block content %}
+<div class="flex-container">
+    <h1>Veröffentlichungen in zeitlicher Reihenfolge</h1>
+    <div class="content-wrapper">
+        <div class="vehicle-detail-content-wrapper">
+            <table class="data-tbl hover stripe row-border" id="doc_tbl">
+                <thead>
+                    <tr>
+                        <th>Document_ID</th>
+                        <th>Recall_CODE</th>
+                        <th>Recall_NAME</th>
+                        <th>Document_CLASS</th>
+                        <th>Document_PATH</th>
+                        <th>Document_PUBLISH_DATE</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+{% block footer_javascript_page %}
+<script src="{{ STATIC_URL }}dfa_App/DataTables/datatables.js"></script>
+<script src="{{ STATIC_URL }}dfa_App/js/moment.min.js"></script>
+<script>
+    "use strict";
+    var tbl = null;
+    jQuery(document).ready(function ($) {
+        {% if perms.dfa_App.view_Recall_Doc %}
+        tbl = $('#doc_tbl').DataTable({
+            responsive: true,
+            stateSave: false,
+            select: 'single',
+            order: [5, 'desc'],
+            ajax: {
+                url: '/api/v1/recalldoclist/?format=json',
+                dataSrc: 'data',
+            },
+            "info": true,
+            "processing": true,
+            "ordering": true,
+            "searching": true,
+            "language": {
+                "emptyTable": "Keine Daten verfügbar",
+                "info": "Angezeigt werden _START_ bis _END_ von _TOTAL_ Einträge",
+                "infoEmpty": "Keine Daten verfügbar",
+                "infoFiltered": "(gefiltert von _MAX_ Einträgen)",
+                "thousands": ".",
+                "lengthMenu": "_MENU_ Einträge pro Seite",
+                "search": "Suche",
+                "paginate": {
+                    "first": "Erste",
+                    "last": "Letzte",
+                    "next": "Vor",
+                    "previous": "Zurück"
+                },
+            },
+            "columns": [
+                {
+                    "data": 'Document_ID',
+                    "visible": false
+                },
+                {
+                    "data": 'Recall.Recall_CODE',
+                    "title": "Code"
+                },
+                {
+                    "data": 'Recall.Recall_NAME',
+                    "title": "Bezeichung"
+                },
+                {
+                    "data": 'Document_CLASS',
+                    "title": "Dokumentenart",
+                    "render": function (value) {
+                        if (value === 0) return "Anleitung";
+                        if (value === 1) return "Technische Information";
+                        if (value === 2) return "Anschreiben";
+                        if (value === 3) return "Sonstiges";
+                    }
+                },
+                {
+                    "data": 'Document_PATH',
+                    "title": "Dokument",
+                    "render": function (value) {
+                        return "<a href='/media/uploads/documents/" + value + "' target='_blank'>Link</a>";
+                    }
+                },
+                {
+                    "data": 'Document_PUBLISH_DATE',
+                    "title": "Datum",
+                    "render": function (value) {
+                        if (value === null) return "";
+                        return moment(value).format('DD.MM.YYYY');
+                    }
+                },
+            ]
+        });
+        {% endif %}
+    });
+</script>
+{% endblock footer_javascript_page %}

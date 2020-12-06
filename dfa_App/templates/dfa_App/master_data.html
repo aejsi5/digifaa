@@ -1,0 +1,388 @@
+{% extends 'base.html' %}
+{% block title %}Verwaltung - Stammdaten{% endblock title %}
+{% block head_css_page %}
+<link href="{{ STATIC_URL }}dfa_App/DataTables/datatables.css" rel="stylesheet" media="screen">
+<style>
+    .main-content{
+        display: flex;
+    }
+</style>
+{% endblock head_css_page %}
+{% block content %}
+<div class="flex-container">
+    <h1>Stammdatenverwatung</h1>
+    <div class="content-wrapper">
+        <ul class="nav nav-tabs">
+            {% if perms.dfa_App.view_vehicle_recall %}
+            <li class="nav-item">
+                <a class="nav-link active" href="#recalls" id="recalls-tab" data-toggle="tab" role="tab"
+                    aria-controls="recalls" aria-selected="true">Produktverbesserungen</a>
+            </li>
+            {% endif %}
+            {% if perms.dfa_App.view_vehicle %}
+            <li class="nav-item">
+                <a class="nav-link" href="#vehicles" id="vehicle-tab" data-toggle="tab" role="tab"
+                    aria-controls="vehicles" aria-selected="false">Fahrzeuge</a>
+            </li>
+            {% endif %}
+            {% if perms.dfa_App.view_history %}
+            <li class="nav-item">
+                <a class="nav-link" href="#his" id="his-tab" data-toggle="tab" role="tab"
+                    aria-controls="his" aria-selected="false">Fahrzeughistorie</a>
+            </li>
+            {% endif %}
+            {% if perms.dfa_App.view_workshop %}
+            <li class="nav-item">
+                <a class="nav-link" href="#workshops" id="workshop-tab" data-toggle="tab" role="tab"
+                    aria-controls="workshops" aria-selected="false">Werkstätten</a>
+            </li>
+            {% endif %}
+        </ul>
+        <div class="vehicle-detail-content-wrapper">
+            {% if perms.dfa_App.view_vehicle_recall %}
+            <div class="tab-pane fade show active" id="recalls" role="tabpanel" aria-labelledby="recalls-tab">
+                <table class="data-tbl hover stripe row-border" id="recall_tbl">
+                    <thead>
+                        <tr>
+                            <th>Recall_ID</th>
+                            <th>Recall_CODE</th>
+                            <th>Recall_NAME</th>
+                            <th>Recall_START_DATE</th>
+                            <th>Recall_STATUS</th>
+                        </tr>
+                    </thead>
+                </table>
+                <div class="btn-div">
+                    <button type="button" class="btn btn-primary" id="btn-overview-recall" disabled>Übersicht</button>
+                    <button type="button" class="btn btn-primary" id="btn-detail-recall" disabled>Detail</button>
+                </div>
+            </div>
+            {% endif %}
+            {% if perms.dfa_App.view_vehicle %}
+            <div class="tab-pane fade" id="vehicles" role="tabpanel" aria-labelledby="vehicle-tab">
+                <table class="data-tbl hover stripe row-border" id="vehicle_tbl">
+                    <thead>
+                        <tr>
+                            <th>Vehicle_ID</th>
+                            <th>Vehicle_VIN</th>
+                            <th>Vehicle_PLATE</th>
+                            <th>Vehicle_MAKE</th>
+                            <th>Vehicle_MODEL</th>
+                            <th>Vehicle_FIRST_REGISTRATION_DATE</th>
+                        </tr>
+                    </thead>
+                </table>
+                {% if perms.dfa_App.view_vehicle and perms.dfa_App.add_vehicle and perms.dfa_App.change_vehicle %}
+                <form action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="file_type" value="vehicle">
+                    <fieldset class=upload-method-fs>
+                        <span class=upload-method-titel>Upload-Methode</span>
+                        <div class="upload-method-wrapper">
+                            <div class="upload-method-input-wrapper">
+                                <div class="form-check mg-right-10px">
+                                    <input class="form-check-input" type="radio" name="Upload_Method" id="Upload_Method_V_save"
+                                        value="save">
+                                    <label class="form-check-label" for="Upload_Method_V_save">Sicher</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="Upload_Method" id="Upload_Method_C_unsave"
+                                        value="unsave" checked>
+                                    <label class="form-check-label" for="Upload_Method_V_unsave">Unsicher</label>
+                                </div>
+                            </div>
+                            <div class="upload-method-legend">
+                                <p><i class="fas fa-info-circle"></i> Die Upload Methode gibt an, was mit bestehenden Datensätzen passieren
+                                    wird, die
+                                    nicht in Ihrer hochzuladenden Datei enthalten sind.<br>
+                                    <b>Sicher: </b>Bestehende Datensätze, die nicht in Ihrer Datei enthalten sind werden nicht gelöscht.<br>
+                                    <b>Unsicher: </b>Bestehende Datensätze, die nicht in Ihrer Datei enthalten sind werden gelöscht. Bitte
+                                    verwenden Sie die unsichere Methode, um Inkonsistenzen und Datenmüll zu vermeiden.</p>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <input type="file" id="import_vehicle" name="import_file">
+                    <input type="submit" class="btn btn-primary" value="Hochladen">
+                </form>
+                {% endif %}
+            </div>
+            {% endif %}
+            {% if perms.dfa_App.view_history and perms.dfa_App.add_history and perms.dfa_App.change_history %}
+            <div class="tab-pane fade" id="his" role="tabpanel" aria-labelledby="his-tab">
+                <form action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="file_type" value="his">
+                    <fieldset class=upload-method-fs>
+                    <span class=upload-method-titel>Upload-Methode</span>
+                    <div class="upload-method-wrapper">
+                        <div class="upload-method-input-wrapper">
+                            <div class="form-check mg-right-10px">
+                                <input class="form-check-input" type="radio" name="Upload_Method" id="Upload_Method_His_save" value="save">
+                                <label class="form-check-label" for="Upload_Method_His_save">Sicher</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="Upload_Method" id="Upload_Method_His_unsave" value="unsave" checked>
+                                <label class="form-check-label" for="Upload_Method_His_unsave">Unsicher</label>
+                            </div>
+                        </div>
+                        <div class="upload-method-legend">
+                            <p><i class="fas fa-info-circle"></i> Die Upload Methode gibt an, was mit bestehenden Datensätzen passieren wird, die
+                                nicht in Ihrer hochzuladenden Datei enthalten sind.<br>
+                                <b>Sicher: </b>Bestehende Datensätze, die nicht in Ihrer Datei enthalten sind werden nicht gelöscht.<br>
+                                <b>Unsicher: </b>Bestehende Datensätze, die nicht in Ihrer Datei enthalten sind werden gelöscht. Bitte verwenden Sie die unsichere Methode, um Inkonsistenzen und Datenmüll zu vermeiden.</p>
+                        </div>
+                    </div>
+                    </fieldset>
+                    <input type="file" id="import_his" name="import_file">
+                    <input type="submit" class="btn btn-primary" value="Hochladen">
+                </form>
+            </div>
+            {% endif %}
+            {% if perms.dfa_App.view_workshop %}
+            <div class="tab-pane fade" id="workshops" role="tabpanel" aria-labelledby="workshop-tab">
+                <table class="data-tbl hover stripe row-border" id="workshop_tbl">
+                    <thead>
+                        <tr>
+                            <th>Workshop_ID</th>
+                            <th>Workshop_NAME</th>
+                            <th>Workshop_ADDRESS</th>
+                            <th>Workshop_ZIP</th>
+                            <th>Workshop_CITY</th>
+                        </tr>
+                    </thead>
+                </table>
+                {% if perms.dfa_App.view_workshop and perms.dfa_App.add_workshop and perms.dfa_App.change_workshop %}
+                <form action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="file_type" value="workshop">
+                    <input type="file" id="import_workshop" name="import_file">
+                    <input type="submit" class="btn btn-primary" value="Hochladen">
+                </form>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<div class="slider-right slider-collapse">
+    <div class="div-controls">
+        <i class="far fa-times-circle"></i>
+    </div>
+    <div class="slider-content-wrapper">
+        
+    </div>
+</div>
+{% endblock content %}
+{% block footer_javascript_page %}
+<script src="{{ STATIC_URL }}dfa_App/DataTables/datatables.js"></script>
+<script src="{{ STATIC_URL }}dfa_App/js/moment.min.js"></script>
+{% if error %}
+<script>
+    var error = {
+        'error_code': '{{ error.code }}',
+        'error_name': '{{ error.name_ger }}',
+        'error_des': '{{ error.description }}'
+    }
+    if (error) {
+        Toast.fire({
+            icon: 'error',
+            title: error['error_name'],
+            text: error['error_des']
+        });
+    }
+</script>
+{% endif %}
+<script type="text/javascript">
+    "use strict";
+    var rtbl = null;
+    var rid = null;
+    var vtbl = null;
+    var wtbl = null;
+    jQuery(document).ready(function ($) {
+        {% if perms.dfa_App.view_vehicle_recall %}
+        rtbl = $('#recall_tbl').DataTable({
+            responsive: true,
+            stateSave: false,
+            select: 'single',
+            order: [3, 'desc'],
+            ajax: {
+                url: '/api/v1/recalllist/?format=json',
+                dataSrc: 'data',
+            },
+            "info": true,
+            "processing": true,
+            "ordering": true,
+            "searching": true,
+            "language": {
+                "emptyTable": "Keine Daten verfügbar",
+                "info": "Angezeigt werden _START_ bis _END_ von _TOTAL_ Einträge",
+                "infoEmpty": "Keine Daten verfügbar",
+                "infoFiltered": "(gefiltert von _MAX_ Einträgen)",
+                "thousands": ".",
+                "lengthMenu": "_MENU_ Einträge pro Seite",
+                "search": "Suche",
+                "paginate": {
+                    "first": "Erste",
+                    "last": "Letzte",
+                    "next": "Vor",
+                    "previous": "Zurück"
+                },
+            },
+            "columns": [
+                {
+                    "data": 'Recall_ID',
+                    "visible": false
+                },
+                {
+                    "data": 'Recall_CODE',
+                    "title": "Code"
+                },
+                {
+                    "data": 'Recall_NAME',
+                    "title": "Bezeichung"
+                },
+                {
+                    "data": 'Recall_START_DATE',
+                    "title": "Start-Datum",
+                    "render": function (value) {
+                        if (value === null) return "";
+                        return moment(value).format('DD.MM.YYYY');
+                    }
+                },
+                {
+                    "data": 'Recall_STATUS',
+                    "title": "Status",
+                    "render": function (value) {
+                        if (value === 0) return "Erstellt";
+                        if (value === 1) return "In Planung";
+                        if (value === 2) return "In Bearbeitung";
+                        if (value === 3) return "Abgeschlossen";
+                        if (value === 4) return "Abgebrochen";
+                    }
+                },
+            ]
+        });
+        rtbl.on('select', function (e, dt, type, indexes) {
+            rid = rtbl.rows({ selected: true }).data()[0]['Recall_ID'];
+            $('#btn-overview-recall').prop('disabled', false);
+            $('#btn-detail-recall').prop('disabled', false);
+        });
+        rtbl.on('deselect', function (e, dt, type, indexes) {
+            $('#btn-overview-recall').prop('disabled', true);
+            $('#btn-detail-recall').prop('disabled', true);
+            rid = null;
+        });
+        {% endif %}
+        {% if perms.dfa_App.view_vehicle %}
+        vtbl = $('#vehicle_tbl').DataTable({
+            responsive: true,
+            stateSave: false,
+            select: 'single',
+            ajax: {
+                url: '/api/v1/vehiclelist/?format=json',
+                dataSrc: 'data',
+            },
+            "info": true,
+            "processing": true,
+            "ordering": true,
+            "searching": true,
+            "language": {
+                "emptyTable": "Keine Daten verfügbar",
+                "info": "Angezeigt werden _START_ bis _END_ von _TOTAL_ Einträge",
+                "infoEmpty": "Keine Daten verfügbar",
+                "infoFiltered": "(gefiltert von _MAX_ Einträgen)",
+                "thousands": ".",
+                "lengthMenu": "_MENU_ Einträge pro Seite",
+                "search": "Suche",
+                "paginate": {
+                    "first": "Erste",
+                    "last": "Letzte",
+                    "next": "Vor",
+                    "previous": "Zurück"
+                },
+            },
+            "columns": [
+                {
+                    "data": 'Vehicle_ID',
+                    "visible": false
+                },
+                {
+                    "data": 'Vehicle_VIN',
+                    "title": "FIN"
+                },
+                {
+                    "data": 'Vehicle_PLATE',
+                    "title": "Kennzeichen"
+                },
+                {
+                    "data": 'Vehicle_MAKE',
+                    "title": "Hesteller"
+                },
+                {
+                    "data": 'Vehicle_MODEL',
+                    "title": "Modell"
+                },
+                {
+                    "data": 'Vehicle_FIRST_REGISTRATION_DATE',
+                    "title": "Erstzulassung"
+                },
+            ]
+        });
+        {% endif %}
+        {% if perms.dfa_App.view_workshop %}
+        wtbl = $('#workshop_tbl').DataTable({
+            responsive: true,
+            stateSave: false,
+            select: 'single',
+            ajax: {
+                url: '/api/v1/workshoplist/?format=json',
+                dataSrc: 'data',
+            },
+            "info": true,
+            "processing": true,
+            "ordering": true,
+            "searching": true,
+            "language": {
+                "emptyTable": "Keine Daten verfügbar",
+                "info": "Angezeigt werden _START_ bis _END_ von _TOTAL_ Einträge",
+                "infoEmpty": "Keine Daten verfügbar",
+                "infoFiltered": "(gefiltert von _MAX_ Einträgen)",
+                "thousands": ".",
+                "lengthMenu": "_MENU_ Einträge pro Seite",
+                "search": "Suche",
+                "paginate": {
+                    "first": "Erste",
+                    "last": "Letzte",
+                    "next": "Vor",
+                    "previous": "Zurück"
+                },
+            },
+            "columns": [
+                {
+                    "data": 'Workshop_ID',
+                    "visible": false
+                },
+                {
+                    "data": 'Workshop_NAME',
+                    "title": "Name"
+                },
+                {
+                    "data": 'Workshop_ADDRESS',
+                    "title": "Adresse"
+                },
+                {
+                    "data": 'Workshop_ZIP',
+                    "title": "PLZ"
+                },
+                {
+                    "data": 'Workshop_CITY',
+                    "title": "Ort"
+                },
+            ]
+        });
+        {% endif %}
+    });
+
+</script>
+<script src="{{ STATIC_URL }}dfa_App/js/master_data.js"></script>
+{% endblock footer_javascript_page %}
