@@ -117,10 +117,9 @@ class RuleBuilder():
 
     def create_json(self, *args, **kwargs):
         self.json_data = json.dumps(self.Rules, sort_keys=True, indent=1, cls=DjangoJSONEncoder)
-        basename = 'constraint'
         random_id = str(uuid.uuid4())
-        suffix = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        self.json_file_name = "_".join([basename, random_id, suffix])
+        suffix = datetime.datetime.now().strftime("%Y%m%d")
+        self.json_file_name = "_".join([random_id, suffix])
 
     def fin(self, *args, **kwargs):
         if self.Constraint.Constraint_Vehicle_VIN_TO:
