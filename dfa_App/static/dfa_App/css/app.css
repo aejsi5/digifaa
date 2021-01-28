@@ -8,6 +8,9 @@
 
 
 }
+html{
+	overflow: hidden;
+}
 body.swal2-shown > [aria-hidden="true"] {
   filter: blur(10px);
 }
