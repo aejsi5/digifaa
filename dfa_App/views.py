@@ -62,6 +62,12 @@ def update_all(request, *args,**kwargs):
         return HttpResponse(status=200)
     return HttpResponse(status=403)
 
+def sample_vehicle_csv(request, *args, **kwargs):
+    with open('sample_vehicle.csv', 'w') as f:
+        writer = csv.DictReader(f, fieldnames=('Vehicle_VIN', 'Vehicle_PLATE', 'Vehicle_MAKE', 'Vehicle_MODEL', 'Vehicle_TYPE','Vehicle_SERIES','Vehicle_FIRST_REGISTRATION_DATE', 'Vehicle_EXTERNAL_ID','Vehicle_LAST_MILEAGE','Vehicle_DATE_LAST_MILEAGE', 'Vehicle_WARRENTY_PERIOD', 'Vehicle_WARRENTOR', 'Vehicle_WARRENTOR_PREFERED_CHANNEL', 'Vehicle_USER', 'Vehicle_USER_CONTACT', 'Vehicle_USER_CONTACT_PHONE', 'Vehicle_USER_CONTACT_EMAIL'),delimiter=";")
+        writer.writeheader()
+        return f
+
 def import_csv(csvfile, filetype, save=True, *args, **kwargs):
     e = []
     ext = csvfile.name.split('.')[-1]

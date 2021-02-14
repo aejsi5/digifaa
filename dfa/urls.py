@@ -35,6 +35,7 @@ urlpatterns = [
     path('produktverbesserung/', views.RecallDetail.as_view(), name='recall_detail'),
     path('tis/', views.tis, name='tech_inf'),
     path('home/', views.index , name='home'),
+    path('samples/vehicle/', views.sample_vehicle_csv, name='vehicle_csv'),
     path('api/v1/vehicle_recall/<pk>', views.Vehicle_Recall_Api.as_view()),
     path('api/v1/note/new', views.Note_Api.as_view()),
     path('api/v1/note/<pk>', views.Note_Api.as_view()),
