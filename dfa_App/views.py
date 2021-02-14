@@ -32,17 +32,17 @@ import io
 
 # Create your views here.
 
-@login_required(login_url='login/')
+@login_required(login_url='/login/')
 def index(request, *args, **kwargs):
     template_name ="index.html"
     return render(request, template_name)
 
-@login_required(login_url='login/')
+@login_required(login_url='/login/')
 def tis(request, *args, **kwargs):
     template_name ="tis.html"
     return render(request, template_name)
 
-@login_required(login_url='login/')
+@login_required(login_url='/login/')
 def run_RuleManager(request, pk, *args, **kwargs):
     if request.user.has_perm('dfa_App.view_vehicle_recall') and request.user.has_perm('dfa_App.add_vehicle_recall') and request.user.has_perm('dfa_App.change_vehicle_recall'):
         RM = RuleManager(pk)
@@ -51,7 +51,7 @@ def run_RuleManager(request, pk, *args, **kwargs):
         return HttpResponse(status=200)
     return HttpResponse(status=403)
 
-@login_required(login_url='login/')
+@login_required(login_url='/login/')
 def update_all(request, *args,**kwargs):
     if request.user.has_perm('dfa_App.view_vehicle_recall') and request.user.has_perm('dfa_App.add_vehicle_recall') and request.user.has_perm('dfa_App.change_vehicle_recall'):
         r = Recall.objects.filter(Recall_STATUS__in=[0,1,2])
@@ -259,6 +259,7 @@ class RuleManager():
             vr.VR_DATE_COMPLETED = h.History_DATE
             vr.save()
 
+@login_required(login_url='/login/')
 class Administration(View):
     template_name = "master_data.html"
 
@@ -335,6 +336,7 @@ class RecallDetail(View):
                     form.save()
                     return self.render_recall_details(request, r, status = 'Upload succeed')          
 
+@login_required(login_url='/login/')
 class VehicleSearch(FormView):
     template_name = 'vehicle_search_template.html'
     ctx = {
