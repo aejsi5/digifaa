@@ -259,7 +259,6 @@ class RuleManager():
             vr.VR_DATE_COMPLETED = h.History_DATE
             vr.save()
 
-@login_required(login_url='/login/')
 class Administration(View):
     template_name = "master_data.html"
 
@@ -336,7 +335,6 @@ class RecallDetail(View):
                     form.save()
                     return self.render_recall_details(request, r, status = 'Upload succeed')          
 
-@login_required(login_url='/login/')
 class VehicleSearch(FormView):
     template_name = 'vehicle_search_template.html'
     ctx = {
