@@ -418,10 +418,6 @@ margin-bottom: 1rem;
     padding: .5rem;
     transition: box-shadow .3s;
 }
-.col-vehicle:hover{
-    box-shadow: 6px 5px 7px -4px rgba(0,0,0,0.75);
-    border: 1px solid #dee2e6;
-}
 .col-vehicle-user{
     min-width: 344px;
 }
@@ -880,4 +876,8 @@ margin-bottom: 1rem;
     font-size: 1rem; 
     font-weight: bold;
     color: var(--contrast);
+}
+.container{
+    margin-right: unset;
+    margin-left: unset;
 }

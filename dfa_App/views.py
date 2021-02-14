@@ -3,6 +3,7 @@ from django.views.generic.edit import FormView
 from django.views import View
 from django.db.models import Q
 from django.contrib.auth.views import LoginView
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from django.core.files import File
 from django.conf import settings
@@ -11,7 +12,6 @@ from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework import generics
 from rest_framework import permissions
 from rest_framework.permissions import *
 from .models import *
@@ -32,14 +32,17 @@ import io
 
 # Create your views here.
 
+@login_required(login_url='login/')
 def index(request, *args, **kwargs):
     template_name ="index.html"
     return render(request, template_name)
 
+@login_required(login_url='login/')
 def tis(request, *args, **kwargs):
     template_name ="tis.html"
     return render(request, template_name)
 
+@login_required(login_url='login/')
 def run_RuleManager(request, pk, *args, **kwargs):
     if request.user.has_perm('dfa_App.view_vehicle_recall') and request.user.has_perm('dfa_App.add_vehicle_recall') and request.user.has_perm('dfa_App.change_vehicle_recall'):
         RM = RuleManager(pk)
@@ -48,6 +51,7 @@ def run_RuleManager(request, pk, *args, **kwargs):
         return HttpResponse(status=200)
     return HttpResponse(status=403)
 
+@login_required(login_url='login/')
 def update_all(request, *args,**kwargs):
     if request.user.has_perm('dfa_App.view_vehicle_recall') and request.user.has_perm('dfa_App.add_vehicle_recall') and request.user.has_perm('dfa_App.change_vehicle_recall'):
         r = Recall.objects.filter(Recall_STATUS__in=[0,1,2])
