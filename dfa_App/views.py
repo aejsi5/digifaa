@@ -262,9 +262,11 @@ class RuleManager():
 class Administration(View):
     template_name = "master_data.html"
 
+    @login_required(login_url='/login/')
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
 
+    @login_required(login_url='/login/')
     def post(self, request, *args, **kwargs):
         if request.FILES:
             csv_file = request.FILES['import_file']
@@ -287,6 +289,7 @@ class Administration(View):
 class RecallDetail(View):
     template_name = "recall_detail.html"
 
+    @login_required(login_url='/login/')
     def get(self, request, *args, **kwargs):
         if request.GET:
             q = request.GET
@@ -298,6 +301,7 @@ class RecallDetail(View):
                return self.render_recall_details(request, None)
         return render(request, self.template_name)
 
+    @login_required(login_url='/login/')
     def render_recall_details(self, request, obj, *args, **kwargs):
         if obj == None:
             ctx = {
@@ -321,6 +325,7 @@ class RecallDetail(View):
             ctx['status'] = kwargs['status']
         return render(request, self.template_name, ctx)
 
+    @login_required(login_url='/login/')
     def post(self, request, *args, **kwargs):
         if request.POST['action'] == 'upload':
             if request.user.has_perm('dfa_App.add_recall_doc'):
@@ -343,6 +348,7 @@ class VehicleSearch(FormView):
         'header': "Fahrzeugsuche",
     }
 
+    @login_required(login_url='/login/')
     def get(self, request, *args, **kwargs):
         if request.GET:
             q = request.GET
@@ -365,6 +371,7 @@ class VehicleSearch_V2(FormView):
         'header': "Fahrzeugsuche",
     }
 
+    @login_required(login_url='/login/')
     def get(self, request, *args, **kwargs):
         if request.GET:
             q = request.GET
@@ -382,9 +389,11 @@ class VehicleSearch_V2(FormView):
 class VehicleDetail(View):
     template_name = 'vehicle_template.html'
 
+    @login_required(login_url='/login/')
     def get(self, request):
         return render(request, self.template_name)
     
+    @login_required(login_url='/login/')
     def render_vehicle(self, request, obj, *args, **kwargs):
         ctx = {
             'vehicle': obj,
