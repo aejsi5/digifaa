@@ -351,6 +351,28 @@ class VehicleSearch(FormView):
                 return render(request, self.template_name, self.ctx )
         return render(request, self.template_name, self.ctx )
 
+class VehicleSearch_V2(FormView):
+    template_name = 'vehicle_search_template_V2.html'
+    ctx = {
+        'Search_by_VIN': Search_by_VIN_V2(),
+        'Search_by_Plate': Search_by_Plate_V2(),
+        'header': "Fahrzeugsuche",
+    }
+
+    def get(self, request, *args, **kwargs):
+        if request.GET:
+            q = request.GET
+            q = q.dict()
+            v = find_vehicle_simple(q)
+            if v:
+                detail = VehicleDetail()
+                return detail.render_vehicle(request, v)               
+            else:
+                if q['type']:
+                    self.ctx['error'] = 'Nicht gefunden'
+                return render(request, self.template_name, self.ctx )
+        return render(request, self.template_name, self.ctx )
+
 class VehicleDetail(View):
     template_name = 'vehicle_template.html'
 

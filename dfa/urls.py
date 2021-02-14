@@ -30,6 +30,7 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name='registration/login.html'), name='logout'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('search/', views.VehicleSearch.as_view(), name='search'),
+    path('search_V2/', views.VehicleSearch_V2.as_view(), name='search_v2'),
     path('stammdaten/', views.Administration.as_view(), name='master_data'),
     path('produktverbesserung/', views.RecallDetail.as_view(), name='recall_detail'),
     path('tis/', views.tis, name='tech_inf'),

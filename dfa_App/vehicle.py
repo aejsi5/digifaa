@@ -23,7 +23,27 @@ def find_vehicle(q):
             return v
         except Vehicle.DoesNotExist:
             return None
-        
+
+def find_vehicle_simple(q):
+    if q["type"] == "by_vin":
+        vin = q["vin"]
+        if not vin:
+            return None
+        try:
+            v = Vehicle.objects.get(Vehicle_VIN=vin, Vehicle_DELETED=False)
+            return v
+        except Vehicle.DoesNotExist:
+            return None
+    if q["type"] == "by_plate":
+        plate = q["plate"]
+        if not plate:
+            return None
+        try:
+            v = Vehicle.objects.get(Vehicle_PLATE=plate, Vehicle_DELETED=False)
+            return v
+        except Vehicle.DoesNotExist:
+            return None
+
 def find_notes(v):
     try:
         notes = Note.objects.filter(Vehicle=v).order_by("Note_DATE")

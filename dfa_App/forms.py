@@ -12,6 +12,30 @@ class LoginForm(forms.ModelForm):
         # simply do not pass 'request' to the parent
         super().__init__(*args, **kwargs)
 
+class Search_by_VIN_V2(forms.Form):
+    vin = forms.CharField(
+        max_length=17, 
+        required= True, 
+        label='Fahrgestellnummer',
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': 'W0L000051T2123456',
+                'class': 'form-control'
+            }
+        ))
+
+class Search_by_Plate_V2(forms.Form):
+    plate = forms.CharField(
+        max_length=9,
+        required= True, 
+        label='Kennzeichen',
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': 'BN-P1234E',
+                'class': 'form-control'
+            }
+        ))
+
 class Search_by_VIN(forms.Form):
     vin = forms.CharField(
         max_length=17, 
